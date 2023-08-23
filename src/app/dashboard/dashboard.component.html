@@ -1,0 +1,157 @@
+<div class="dashBoard">
+    <section class="sideNav">
+        <div class="item" (click)="changeselection(i)" [ngClass]="{'selected':selected == i}" *ngFor="let item of sideItems;let i = index">
+            <div class="itemName">
+                <span>{{ item.name }}</span>
+                <mat-divider style="margin: 10px 0px;"></mat-divider>
+            </div>
+            <div *ngIf="selected == i" class="indicator">
+                <mat-icon>chevron_right</mat-icon>
+            </div>
+        </div>
+    </section>
+    <section  class="detailedView">
+        <div class="profileHeader">
+            <h3 *ngIf="selected == 0">Profile</h3>
+            <h3 *ngIf="selected == 1">Posts</h3>
+            <h3 *ngIf="selected == 2">Gallery</h3>
+            <h3 *ngIf="selected == 3">Todo</h3>
+            <div class="userProfile" (click)="profileClicked = !profileClicked">
+                <img [src]="user.profilepicture"  alt="">
+                <span class="userName">{{ user.name }}</span>
+            </div>
+        </div>
+        <mat-divider style="color: #9a9a9a"></mat-divider>
+        <div class="profileDetails" *ngIf="selected == 0">
+            <div class="profile">
+                <div class="profilePicandName">
+                    <img [src]="user.profilepicture" alt="">
+                    <span class="userName">{{ user.name }}</span>
+                </div>
+                <div class="personalDetails">
+                    <div class="detItemContainer" *ngFor="let item of personalDetails;let i = index">
+                        <span class="grayText" style="color: #9a9a9a"
+                        >{{item.name}}</span>
+                        <span class="dynamicData" *ngIf="i == 0">{{ user.username }}</span>
+                        <span class="dynamicData" *ngIf="i == 1">{{ user.email }}</span>
+                        <span class="dynamicData" *ngIf="i == 2">{{ user.phone }}</span>
+                        <span class="dynamicData" *ngIf="i == 3">{{ user.website }}</span>
+                    </div>
+                    
+                </div>
+                <mat-divider style="color: #9a9a9a;width: 80%;
+                margin: 10px auto;"></mat-divider>
+                <div class="companyDetails">
+                    <h4 style="color: #9a9a9a">Company</h4>
+                    <div class="compItemContainer" *ngFor="let item of companyDetails;let i = index">
+                        <span class="grayText" style="color: #9a9a9a"
+                        >{{item.name}}</span>
+                        <span class="dynamicData" *ngIf="i == 0">{{user.company.name}} </span>
+                        <span class="dynamicData" *ngIf="i == 1">{{user.company.catchPhrase}} </span>
+                        <span class="dynamicData" *ngIf="i == 2">{{user.company.bs}} </span>
+                    </div>
+
+                </div>
+            </div>
+            <mat-divider style="color: #9a9a9a" [vertical]="true"></mat-divider>
+            <div class="addressDetails">
+                <span style="color: #9a9a9a">Address:</span>
+                <div class="addDetailsItem" *ngFor="let item of addressDetails ;let i = index">
+                    <span style="color: #9a9a9a;width: 120px;
+                    text-align: end;">{{item.name}}</span>
+                    <span *ngIf="i == 0"> {{ user.address.street}}</span>
+                    <span *ngIf="i == 1"> {{ user.address.suite}}</span>
+                    <span *ngIf="i == 2"> {{ user.address.city}}</span>
+                    <span *ngIf="i == 3"> {{ user.address.zipcode}}</span>
+                </div>
+                <div class="map">
+                    
+                <google-map height="40vh"
+                width="47vw"
+                [center]="center"
+                [zoom]="zoom"
+                >
+                </google-map>
+                </div>
+                <div class="latLong" 
+                style="display: flex;
+                gap: 10px;
+                justify-content: flex-end;">
+                    <span style="color: #9a9a9a">Lat:</span>{{ user.address.geo.lat }}
+                    <span style="color: #9a9a9a">Long:</span>{{ user.address.geo.lng }}
+                </div>
+            </div>
+        </div>
+        <div *ngIf="selected !== 0" class="comingSoon">
+            <span>Coming Soon</span>
+        </div>
+    </section>
+
+    <div *ngIf="profileClicked" class="profilePopUp" >
+        <img [src]="user.profilepicture" alt="">
+        <span>{{ user.name }}</span>
+        <span style="color: #9a9a9a;">{{ user.email }}</span>
+        <div class="allUserList">
+            <div (click)="changeUser(i)" class="userCard" *ngFor="let item of usersList;let i = index">
+                <img [src]="item.profilepicture" alt="">
+                <span>{{item.name}}</span>
+            </div>
+        </div>
+        <button (click)="signOut()" class="signOut">Sign out</button>
+    </div>
+</div>
+
+
+
+<div class="chatContainer">
+    <div class="chat" (click)="chatStatus= !chatStatus">
+        <div style="display: flex;
+        justify-content: space-between;
+        gap: 5px;">
+            <img src="assets/icons/chat-bubble.svg" alt="">
+            <span>Chats</span>
+        </div>
+        <mat-icon style="color: white;" *ngIf="chatStatus">expand_more</mat-icon>
+        <mat-icon style="color: white;" *ngIf="!chatStatus">expand_less</mat-icon>
+    </div>
+    
+    <div *ngIf="chatStatus" class="allChatList">
+        <div (click)="chatUser(item)" class="userCard" *ngFor="let item of findPeopleWithoutCurrent(usersList);let i = index">
+            <div class="leftSide">
+                <img [src]="item.profilepicture" alt="">
+                <span>{{item.name}}</span>
+            </div>
+            <div [ngClass]="{'green': i%2 == 0,'gray': i%2 !== 0}" class="status"></div>
+        </div>
+    </div>
+  
+</div>
+<div class="indivisualChat" *ngIf="indChatStatus">
+    <div class="chat" (click)="indChatExpanded = !indChatExpanded;scrolltoBottom()">
+        <div style="display: flex;
+        justify-content: space-between;
+        gap: 5px;">
+            <img [src]="currentActivechat.profilepicture" alt="">
+            <span>{{currentActivechat.name}}</span>
+        </div>
+        <div>
+            <mat-icon style="color: white;" *ngIf="indChatExpanded">expand_more</mat-icon>
+            <mat-icon style="color: white;" *ngIf="!indChatExpanded">expand_less</mat-icon>
+            <mat-icon style="color: white;transform: scale(0.8);" (click)="closeChat()" *ngIf="indChatExpanded">close</mat-icon>
+        </div>
+        
+    </div>
+    <div class="inbox" *ngIf="indChatExpanded">
+        <div class="chatWindow" id="chatWindow">
+            <div class="messageBubble" [ngClass]="{'recieved': item.type == 'r','sent': item.type == 's'}" *ngFor="let item of chatHistory">
+                <span>{{ item.message }}</span>
+            </div>
+        </div>
+        <div class="messageInput">
+            <input type="text" [(ngModel)]="currentMessage">
+            <button (click)="registerChat(currentMessage)">
+                <mat-icon style="color: #334bfa;">send</mat-icon>
+            </button>
+        </div>
+    </div>
+</div>

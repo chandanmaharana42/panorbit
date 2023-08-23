@@ -1,0 +1,29 @@
+<div class="home">
+    <img src="assets/icons/backgroung.svg"
+     style="margin-top: 10px;
+     top: 0px;
+     filter: grayscale(100%);
+     opacity: 0.6;
+     filter: grayscale(100%);
+     opacity: 0.2;
+     z-index: 1;
+     position: absolute;"
+      alt="">
+    <img src="assets/icons/backgroung.svg"
+    style="z-index: 1;
+    position: absolute;
+    top: 0px;"
+    alt="">
+    <div class="card">
+        <section class="header">
+            <h3>Select an account</h3>
+        </section>
+        <section class="accountList">
+            <div class="account" (click)="redirectToDash(i)" *ngFor="let item of users;let i = index">
+                <img style="height: 30px;width: 30px; border-radius: 50%;" [src]="item.profilepicture" alt="">
+                <span>{{ item.name }}</span>
+            </div>
+
+        </section>
+    </div>
+</div>
